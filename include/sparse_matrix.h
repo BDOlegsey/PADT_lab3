@@ -1,46 +1,57 @@
 #ifndef LAB3_SPARSE_MATRIX_H
 #define LAB3_SPARSE_MATRIX_H
 
+#include <cstddef>
+
 #include "array_sequence.h"
-#include "matrix.h"
+#include "errors.h"
 
 namespace lab3 {
 
 template <class T>
 struct SparseEntry {
-    int row;
-    int col;
-    T   value;
+    size_t row;
+    size_t col;
+    T      value;
     SparseEntry() : row(0), col(0), value(T()) {}
-    SparseEntry(int r, int c, const T& v) : row(r), col(c), value(v) {}
+    SparseEntry(size_t r, size_t c, const T& v) : row(r), col(c), value(v) {}
 };
 
 template <class T>
-class SparseMatrix : public Matrix<T> {
+class SparseMatrix {
 public:
-    SparseMatrix(int rows, int cols);
-    SparseMatrix(int rows, int cols, const T* data);
+    SparseMatrix(size_t rows, size_t cols);
+    SparseMatrix(size_t rows, size_t cols, const T* data);
     SparseMatrix(const SparseMatrix<T>& other);
     SparseMatrix<T>& operator=(const SparseMatrix<T>& other);
-    ~SparseMatrix() override;
+    ~SparseMatrix();
 
-    const T& Get(int row, int col) const override;
-    void Set(int row, int col, const T& value) override;
+    size_t GetRows() const { return rows_; }
+    size_t GetCols() const { return cols_; }
 
-    void AddMatrix(const Matrix<T>& other) override;
-    void MulScalar(const T& scalar) override;
-    double Norm() const override;
+    const T& Get(size_t row, size_t col) const;
+    void Set(size_t row, size_t col, const T& value);
+
+    void AddMatrix(const SparseMatrix<T>& other);
+    void MulScalar(const T& scalar);
+    double Norm() const;
 
     SparseMatrix<T> Multiply(const SparseMatrix<T>& other) const;
 
-    int GetNnz() const;
+    size_t GetNnz() const;
 
 private:
+    size_t rows_;
+    size_t cols_;
     lab2::MutableArraySequence<SparseEntry<T>>* entries_;
     mutable T zero_;
 
-    int  FindIdx(int row, int col) const;
-    void EraseAt(int idx);
+    size_t FindIdx(size_t row, size_t col) const;
+    void   EraseAt(size_t idx);
+    void   CheckBounds(size_t row, size_t col) const;
+    void   CheckSameShape(const SparseMatrix<T>& other) const;
+
+    static const size_t kNotFound = static_cast<size_t>(-1);
 };
 
 }  // namespace lab3
