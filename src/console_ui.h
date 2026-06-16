@@ -32,7 +32,8 @@ private:
     void PrintMenu() const;
 
     void RunTests();
-    void MakeMatrix(int slot);
+    void MakeDenseMatrix(int slot);
+    void MakeSparseMatrix();
     void ShowMatrices() const;
     void AddMatrices();
     void MulScalarMenu();
@@ -49,16 +50,19 @@ private:
     void OrthogonalCheckMenu();
     void DropSlot();
 
-    Matrix<double>* ReadMatrix();
-    void PrintMatrix(const char* label, const Matrix<double>* m) const;
+    Matrix<double>* ReadDenseMatrix();
+    void PrintDenseMatrix(const char* label, const Matrix<double>* m) const;
+    void PrintSparseMatrix(const char* label, const SparseMatrix<double>* m) const;
     void ReplaceSlot(int slot, Matrix<double>* value);
     int ReadInt(const char* prompt) const;
     double ReadDouble(const char* prompt) const;
     int ReadMenuChoice() const;
     Matrix<double>*& SlotRef(int slot);
 
-    Matrix<double>* slot_a_;
-    Matrix<double>* slot_b_;
+    Matrix<double>*       slot_a_;
+    Matrix<double>*       slot_b_;
+    SparseMatrix<double>* sparse_a_;
+    SparseMatrix<double>* sparse_b_;
 };
 
 }  // namespace lab3
